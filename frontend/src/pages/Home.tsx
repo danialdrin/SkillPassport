@@ -12,10 +12,12 @@ import { Skeleton } from "../components/ui/skeleton";
 import { Button } from "../components/ui/button";
 import { ChevronRight, BookOpen, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getMockRecents } from "../mocks/search";
 
 export const Home: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.user_id || "";
+  const isMockMode = new URLSearchParams(window.location.search).get("mock") === "true";
 
   const {
     spaces,
@@ -39,9 +41,9 @@ export const Home: React.FC = () => {
 
   // Resources Query
   const { data: resources, isLoading: resourcesLoading } = useQuery({
-    queryKey: ["resources"],
-    queryFn: () => resourcesApi.list(),
-    enabled: !!userId,
+    queryKey: ["resources", user?.email],
+    queryFn: () => isMockMode ? Promise.resolve(getMockRecents(user?.email || "arul@gmail.com")) : resourcesApi.list(),
+    enabled: !!userId && !!user?.email,
   });
 
   // Strict Filter for Strong Analyzed Materials Only

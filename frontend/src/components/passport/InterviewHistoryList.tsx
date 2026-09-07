@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { examsApi } from '../../api/exams';
+import { InterviewHistoryItem } from '../../types/assessment';
 import { Skeleton } from '../ui/skeleton';
 import { MessageSquareText, ChevronDown, ChevronUp, Bot, User, CheckCircle2 } from 'lucide-react';
 
 export interface InterviewHistoryListProps {
   userId: string;
+  mockHistory?: InterviewHistoryItem[];
 }
 
-export const InterviewHistoryList: React.FC<InterviewHistoryListProps> = ({ userId }) => {
+export const InterviewHistoryList: React.FC<InterviewHistoryListProps> = ({ userId, mockHistory }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const { data: history, isLoading } = useQuery({
     queryKey: ['interview-history', userId],
     queryFn: () => examsApi.getInterviewHistory(userId),
-    enabled: !!userId,
+    enabled: !!userId && !mockHistory,
   });
+
+  const displayedHistory = mockHistory || history;
 
   if (isLoading) {
     return (
@@ -26,7 +30,7 @@ export const InterviewHistoryList: React.FC<InterviewHistoryListProps> = ({ user
     );
   }
 
-  if (!history || history.length === 0) {
+  if (!displayedHistory || displayedHistory.length === 0) {
     return (
       <div className="p-6 bg-surface border border-line rounded-sm text-center">
         <MessageSquareText className="w-6 h-6 text-ink-muted mx-auto mb-2" />
@@ -37,7 +41,7 @@ export const InterviewHistoryList: React.FC<InterviewHistoryListProps> = ({ user
 
   return (
     <div className="space-y-3">
-      {history.map((session) => {
+      {displayedHistory.map((session) => {
         const isExpanded = expandedId === session.session_id;
 
         return (

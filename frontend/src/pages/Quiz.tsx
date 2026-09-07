@@ -10,11 +10,14 @@ import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert } from '../components/ui/alert';
 import { ArrowLeft, ChevronRight, Loader2, Send } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const QuizPage: React.FC = () => {
   const { resourceId } = useParams<{ resourceId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const isMockResource = resourceId?.startsWith('mock-resource-') === true;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
@@ -29,7 +32,16 @@ export const QuizPage: React.FC = () => {
     refetch: refetchQuiz,
   } = useQuery({
     queryKey: ['exam-quiz', resourceId],
-    queryFn: () => examsApi.startQuiz(resourceId!),
+    queryFn: () => isMockResource
+      ? Promise.resolve({
+          assessment_id: `mock-assessment-${resourceId}`,
+          questions: [
+            { question_id: 'mock-q-1', type: 'mcq' as const, prompt: 'Which Python feature is used to group reusable code?', options: ['A function', 'A loop', 'A comment', 'A variable'], node_id: 'skill-python-basics', target_bloom: 'understand' },
+            { question_id: 'mock-q-2', type: 'short_answer' as const, prompt: 'Explain one practical use for a Python dictionary.', node_id: 'skill-python-data', target_bloom: 'apply' },
+            { question_id: 'mock-q-3', type: 'code_explain' as const, prompt: 'What does this expression return: [x * 2 for x in range(3)]?', node_id: 'skill-python-syntax', target_bloom: 'analyze' },
+          ],
+        })
+      : examsApi.startQuiz(resourceId!),
     enabled: !!resourceId,
   });
 
@@ -37,6 +49,16 @@ export const QuizPage: React.FC = () => {
   const submitMutation = useMutation({
     mutationFn: (answersArray: Array<{ question_id: string; user_answer: string }>) => {
       if (!quizData?.assessment_id) throw new Error('Missing assessment ID');
+      if (isMockResource) {
+        return Promise.resolve({
+          attempt_id: `mock-attempt-${resourceId}`,
+          assessment_id: quizData.assessment_id,
+          user_id: user?.email || 'arul@gmail.com',
+          score: Math.round((answersArray.filter((answer) => answer.user_answer.trim()).length / answersArray.length) * 100),
+          per_question_result: answersArray.map((answer) => ({ question_id: answer.question_id, raw_score: answer.user_answer.trim() ? 1 : 0, feedback: answer.user_answer.trim() ? 'Answer recorded for mock evaluation.' : 'No answer provided.', node_id: 'skill-python-basics' })),
+          created_at: new Date().toISOString(),
+        });
+      }
       return examsApi.submitQuiz(quizData.assessment_id, { answers: answersArray });
     },
     onSuccess: (attempt) => {

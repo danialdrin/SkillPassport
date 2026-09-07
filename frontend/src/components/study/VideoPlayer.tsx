@@ -1,5 +1,6 @@
 import React from 'react';
 import { Youtube, FileText } from 'lucide-react';
+import { getYouTubeVideoId } from '../../utils/youtube';
 
 export interface VideoPlayerProps {
   sourceType: 'youtube' | 'pdf';
@@ -18,15 +19,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const isYoutube = sourceType === 'youtube';
 
   const getEmbedUrl = (url: string) => {
-    if (url.includes('v=')) {
-      const id = url.split('v=')[1].split('&')[0];
-      return `https://www.youtube-nocookie.com/embed/${id}`;
-    }
-    if (url.includes('youtu.be/')) {
-      const id = url.split('youtu.be/')[1].split('?')[0];
-      return `https://www.youtube-nocookie.com/embed/${id}`;
-    }
-    return url;
+    const id = getYouTubeVideoId(url);
+    return id ? `https://www.youtube-nocookie.com/embed/${id}` : url;
   };
 
   return (

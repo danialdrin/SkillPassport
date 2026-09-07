@@ -5,12 +5,14 @@ import { Skeleton } from '../ui/skeleton';
 import { Alert } from '../ui/alert';
 import { Button } from '../ui/button';
 import { RotateCw, ChevronLeft, ChevronRight, RefreshCw, BookOpen } from 'lucide-react';
+import { FlashcardsContent } from '../../types/interactive';
 
 export interface FlashcardsPanelProps {
   resourceId: string;
+  mockData?: FlashcardsContent;
 }
 
-export const FlashcardsPanel: React.FC<FlashcardsPanelProps> = ({ resourceId }) => {
+export const FlashcardsPanel: React.FC<FlashcardsPanelProps> = ({ resourceId, mockData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
@@ -23,10 +25,10 @@ export const FlashcardsPanel: React.FC<FlashcardsPanelProps> = ({ resourceId }) 
   } = useQuery({
     queryKey: ['flashcards', resourceId],
     queryFn: () => interactiveApi.getFlashcards(resourceId),
-    enabled: !!resourceId,
+    enabled: !!resourceId && !mockData,
   });
 
-  if (isLoading) {
+  if (!mockData && isLoading) {
     return (
       <div className="p-4 space-y-3">
         <Skeleton className="h-44 w-full bg-surface rounded-sm" />
@@ -34,7 +36,7 @@ export const FlashcardsPanel: React.FC<FlashcardsPanelProps> = ({ resourceId }) 
     );
   }
 
-  if (isError) {
+  if (!mockData && isError) {
     return (
       <div className="p-4 space-y-3">
         <Alert variant="error">
@@ -47,7 +49,7 @@ export const FlashcardsPanel: React.FC<FlashcardsPanelProps> = ({ resourceId }) 
     );
   }
 
-  const cards = flashcardData?.flashcards || [];
+  const cards = mockData?.flashcards || flashcardData?.flashcards || [];
 
   if (cards.length === 0) {
     return (

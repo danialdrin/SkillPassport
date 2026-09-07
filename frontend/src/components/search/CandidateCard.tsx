@@ -24,6 +24,7 @@ export interface CandidateCardProps {
   activeJobId?: string | null;
   activeResourceId?: string | null;
   analysisStatus?: AnalysisStatus;
+  mockMode?: boolean;
 }
 
 export const CandidateCard: React.FC<CandidateCardProps> = ({
@@ -32,16 +33,25 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
   activeJobId,
   activeResourceId,
   analysisStatus = "waiting",
+  mockMode = false,
 }) => {
   const [selecting, setSelecting] = React.useState(false);
   const isJobActiveForThisCard = activeResourceId === candidate.resource_id;
 
   const medium = candidate.medium_analysis;
-  const currentStatus: AnalysisStatus = medium ? "complete" : analysisStatus;
+  const currentStatus: AnalysisStatus = isJobActiveForThisCard
+    ? "analyzing"
+    : medium
+      ? "complete"
+      : analysisStatus;
 
   const handleSelect = async () => {
     setSelecting(true);
     try {
+      if (mockMode) {
+        onSelect(`mock-job-${candidate.resource_id}`, candidate.resource_id);
+        return;
+      }
       const response = await resourcesApi.select(candidate.resource_id);
       onSelect(response.job_id, candidate.resource_id);
     } catch (err) {

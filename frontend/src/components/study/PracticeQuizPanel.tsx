@@ -5,12 +5,14 @@ import { Skeleton } from '../ui/skeleton';
 import { Alert } from '../ui/alert';
 import { Button } from '../ui/button';
 import { HelpCircle, RefreshCw, CheckCircle2, XCircle } from 'lucide-react';
+import { PracticeQuizContent } from '../../types/interactive';
 
 export interface PracticeQuizPanelProps {
   resourceId: string;
+  mockData?: PracticeQuizContent;
 }
 
-export const PracticeQuizPanel: React.FC<PracticeQuizPanelProps> = ({ resourceId }) => {
+export const PracticeQuizPanel: React.FC<PracticeQuizPanelProps> = ({ resourceId, mockData }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [showExplanations, setShowExplanations] = useState<Record<number, boolean>>({});
 
@@ -23,10 +25,10 @@ export const PracticeQuizPanel: React.FC<PracticeQuizPanelProps> = ({ resourceId
   } = useQuery({
     queryKey: ['practice-quiz', resourceId],
     queryFn: () => interactiveApi.getPracticeQuiz(resourceId),
-    enabled: !!resourceId,
+    enabled: !!resourceId && !mockData,
   });
 
-  if (isLoading) {
+  if (!mockData && isLoading) {
     return (
       <div className="p-4 space-y-3">
         <Skeleton className="h-28 w-full bg-surface" />
@@ -35,7 +37,7 @@ export const PracticeQuizPanel: React.FC<PracticeQuizPanelProps> = ({ resourceId
     );
   }
 
-  if (isError) {
+  if (!mockData && isError) {
     return (
       <div className="p-4 space-y-3">
         <Alert variant="error">
@@ -48,7 +50,7 @@ export const PracticeQuizPanel: React.FC<PracticeQuizPanelProps> = ({ resourceId
     );
   }
 
-  const questions = quizData?.quiz || [];
+  const questions = mockData?.quiz || quizData?.quiz || [];
 
   if (questions.length === 0) {
     return (

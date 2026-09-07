@@ -50,8 +50,8 @@ export const TopBar: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 w-full bg-paper/95 backdrop-blur-md border-b border-line/40">
       <div className="flex min-h-16 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-10 xl:px-12">
-        {/* Left: Menu Toggle + Logo */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+        {/* Left: Menu Toggle */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0 min-w-9">
           {status === "authenticated" && (
             <div className="relative">
               <button
@@ -97,23 +97,6 @@ export const TopBar: React.FC = () => {
               )}
             </div>
           )}
-
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-ink transition-opacity hover:opacity-90"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-ink text-sm font-bold font-mono text-paper">
-              SP
-            </div>
-            <div className="hidden md:block">
-              <span className="block font-serif text-lg font-bold leading-tight tracking-tight text-ink">
-                SkillPassport
-              </span>
-              <span className="-mt-1 block text-[10px] uppercase tracking-wider text-ink-muted font-mono">
-                Intelligence
-              </span>
-            </div>
-          </Link>
         </div>
 
         {/* Center: Search Input + Ingest Button */}
@@ -150,7 +133,7 @@ export const TopBar: React.FC = () => {
         )}
 
         {/* Right: User Avatar Circle */}
-        <div className="relative shrink-0 flex items-center gap-3">
+        <div className="relative shrink-0 flex items-center justify-end gap-3 min-w-9">
           {status === "authenticated" && user ? (
             <>
               <button

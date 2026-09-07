@@ -6,12 +6,14 @@ import { Alert } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Sparkles, HelpCircle, MessageSquareText, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SummaryContent } from '../../types/interactive';
 
 export interface SummaryPanelProps {
   resourceId: string;
+  mockData?: SummaryContent;
 }
 
-export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId }) => {
+export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId, mockData }) => {
   const {
     data: summary,
     isLoading,
@@ -21,10 +23,12 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId }) => {
   } = useQuery({
     queryKey: ['summary', resourceId],
     queryFn: () => interactiveApi.getSummary(resourceId),
-    enabled: !!resourceId,
+    enabled: !!resourceId && !mockData,
   });
 
-  if (isLoading) {
+  const displayedSummary = mockData || summary;
+
+  if (!mockData && isLoading) {
     return (
       <div className="space-y-3 p-4">
         <Skeleton className="h-6 w-48 bg-line/40" />
@@ -34,7 +38,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId }) => {
     );
   }
 
-  if (isError) {
+  if (!mockData && isError) {
     return (
       <div className="p-4 space-y-3">
         <Alert variant="error">
@@ -47,7 +51,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId }) => {
     );
   }
 
-  if (!summary) return null;
+  if (!displayedSummary) return null;
 
   return (
     <div className="space-y-6">
@@ -57,7 +61,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId }) => {
           <Sparkles className="w-3.5 h-3.5" /> Core Concept Takeaway
         </span>
         <p className="text-xs font-serif text-ink font-semibold leading-relaxed">
-          "{summary.key_takeaway}"
+          "{displayedSummary.key_takeaway}"
         </p>
       </div>
 
@@ -67,7 +71,7 @@ export const SummaryPanel: React.FC<SummaryPanelProps> = ({ resourceId }) => {
           Structured Takeaways
         </h4>
         <ul className="space-y-2 text-xs text-ink leading-relaxed font-sans">
-          {summary.summary_points.map((point, idx) => (
+          {displayedSummary.summary_points.map((point, idx) => (
             <li key={idx} className="flex items-start gap-2.5 p-2 bg-surface border border-line rounded-xs">
               <CheckCircle2 className="w-4 h-4 text-mastered shrink-0 mt-0.5" />
               <span>{point}</span>

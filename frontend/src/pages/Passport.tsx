@@ -10,30 +10,35 @@ import { InterviewHistoryList } from '../components/passport/InterviewHistoryLis
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import { Skeleton } from '../components/ui/skeleton';
 import { Award, AlertTriangle, MessageSquareText, ShieldCheck, Calendar } from 'lucide-react';
+import { mockInterviewHistory, mockPassport, mockPassportGaps } from '../mocks/passport';
 
 export const PassportPage: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.user_id || '';
+  const isMockMode = new URLSearchParams(window.location.search).get('mock') === 'true';
 
   // Passport Query
   const { data: passport, isLoading: passportLoading } = useQuery({
     queryKey: ['passport', userId],
     queryFn: () => passportApi.getPassport(userId),
-    enabled: !!userId,
+    enabled: !!userId && !isMockMode,
   });
 
   // Gaps Query
   const { data: gapsData, isLoading: gapsLoading } = useQuery({
     queryKey: ['passport-gaps', userId],
     queryFn: () => passportApi.getPassportGaps(userId),
-    enabled: !!userId,
+    enabled: !!userId && !isMockMode,
   });
 
+  const displayedPassport = isMockMode ? mockPassport : passport;
+  const displayedGaps = isMockMode ? mockPassportGaps : gapsData;
+
   const overallScore = React.useMemo(() => {
-    if (!passport || passport.nodes.length === 0) return 0;
-    const total = passport.nodes.reduce((acc, node) => acc + node.competency_score, 0);
-    return Math.round(total / passport.nodes.length);
-  }, [passport]);
+    if (!displayedPassport || displayedPassport.nodes.length === 0) return 0;
+    const total = displayedPassport.nodes.reduce((acc, node) => acc + node.competency_score, 0);
+    return Math.round(total / displayedPassport.nodes.length);
+  }, [displayedPassport]);
 
   return (
     <PageShell>
@@ -72,11 +77,11 @@ export const PassportPage: React.FC = () => {
           <TabsList>
             <TabsTrigger value="nodes">
               <Award className="w-3.5 h-3.5 mr-1.5" />
-              Verified Competency Nodes ({passport?.nodes?.length || 0})
+              Verified Competency Nodes ({displayedPassport?.nodes?.length || 0})
             </TabsTrigger>
             <TabsTrigger value="gaps">
               <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />
-              Prerequisite Gaps ({gapsData?.gaps?.length || 0})
+              Prerequisite Gaps ({displayedGaps?.gaps?.length || 0})
             </TabsTrigger>
             <TabsTrigger value="interviews">
               <MessageSquareText className="w-3.5 h-3.5 mr-1.5" />
@@ -91,7 +96,7 @@ export const PassportPage: React.FC = () => {
                 <Skeleton className="h-48 w-full bg-surface" />
               </div>
             ) : (
-              <PassportNodeTable nodes={passport?.nodes || []} />
+              <PassportNodeTable nodes={displayedPassport?.nodes || []} />
             )}
           </TabsContent>
 
@@ -102,12 +107,12 @@ export const PassportPage: React.FC = () => {
                 <Skeleton className="h-20 w-full bg-surface" />
               </div>
             ) : (
-              <GapRecommendationCard gaps={gapsData?.gaps || []} />
+              <GapRecommendationCard gaps={displayedGaps?.gaps || []} />
             )}
           </TabsContent>
 
           <TabsContent value="interviews">
-            <InterviewHistoryList userId={userId} />
+            <InterviewHistoryList userId={userId} mockHistory={isMockMode ? mockInterviewHistory : undefined} />
           </TabsContent>
         </Tabs>
       </div>

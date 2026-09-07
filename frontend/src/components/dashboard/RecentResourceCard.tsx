@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ResourceResponse } from '../../types/resources';
 import { FileText, Youtube } from 'lucide-react';
+import { getYouTubeVideoId } from '../../utils/youtube';
 
 interface RecentResourceCardProps {
   resource: ResourceResponse;
@@ -21,13 +22,8 @@ export const RecentResourceCard: React.FC<RecentResourceCardProps> = ({ resource
   const getThumbnailUrl = () => {
     if (resource.thumbnail) return resource.thumbnail;
     if (isVideo && resource.url_or_file) {
-      if (resource.url_or_file.includes('v=')) {
-        const videoId = resource.url_or_file.split('v=')[1]?.split('&')[0];
-        if (videoId) return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      } else if (resource.url_or_file.includes('youtu.be/')) {
-        const videoId = resource.url_or_file.split('youtu.be/')[1]?.split('?')[0];
-        if (videoId) return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      }
+      const videoId = getYouTubeVideoId(resource.url_or_file);
+      if (videoId) return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
     }
     return null;
   };

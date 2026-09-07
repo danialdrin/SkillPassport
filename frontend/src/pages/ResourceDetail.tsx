@@ -15,41 +15,42 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs'
 import { Skeleton } from '../components/ui/skeleton';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, HelpCircle, MessageSquareText, FileText, Sparkles } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { getMockRecents, getMockTranscript } from '../mocks/search';
+import { mockFlashcards, mockMaterialKnowledgeGraph, mockPracticeQuiz, mockSummary } from '../mocks/interactive';
 
 export const ResourceDetail: React.FC = () => {
   const { id: resourceId } = useParams<{ id: string }>();
+  const { user } = useAuth();
+  const isMockResource = resourceId?.startsWith('mock-resource-') === true;
 
   // Find associated resource doc from user list
   const { data: resources } = useQuery({
-    queryKey: ['resources'],
-    queryFn: () => resourcesApi.list(),
+    queryKey: ['resources', user?.email],
+    queryFn: () => isMockResource ? Promise.resolve(getMockRecents(user?.email || 'arul@gmail.com')) : resourcesApi.list(),
+    enabled: !!user?.email,
   });
 
   const resource = React.useMemo(() => {
     return resources?.find((r) => r.resource_id === resourceId);
   }, [resources, resourceId]);
 
-  // Fetch Analysis doc
-  const { data: analysis, isLoading: analysisLoading } = useQuery({
+  const { data: analysis } = useQuery({
     queryKey: ['analysis', resourceId],
-    queryFn: async () => {
-      // Find analysis_id from resource or fetch first analysis
-      if (!resourceId) throw new Error('No resource ID');
-      // For study page, analysis is queried via resource or analysisId
-      return null;
-    },
-    enabled: !!resourceId,
+    queryFn: () => analysesApi.getLatestForResource(resourceId!),
+    enabled: !!resourceId && !isMockResource,
   });
 
+  // Fetch Analysis doc
   // Fetch Material KG
   const { data: materialKg, isLoading: kgLoading } = useQuery({
     queryKey: ['material-kg', resourceId],
     queryFn: async () => {
       if (!resourceId) throw new Error('No resource ID');
       // Try to fetch material KG
-      return knowledgeGraphApi.getMaterialKG(resourceId);
+      return knowledgeGraphApi.getMaterialKG(analysis!.analysis_id);
     },
-    enabled: !!resourceId,
+    enabled: !!resourceId && !!analysis?.analysis_id && !isMockResource,
   });
 
   if (!resourceId) return null;
@@ -108,7 +109,7 @@ export const ResourceDetail: React.FC = () => {
               </TabsList>
 
               <TabsContent value="transcript">
-                <TranscriptTab transcriptOrText={resource?.title || 'Resource text transcript.'} />
+                <TranscriptTab transcriptOrText={isMockResource ? getMockTranscript(resourceId) : analysis?.transcript_or_text || 'Transcript is not available for this resource yet.'} />
               </TabsContent>
 
               <TabsContent value="sections">
@@ -132,19 +133,19 @@ export const ResourceDetail: React.FC = () => {
               </TabsList>
 
               <TabsContent value="summary">
-                <SummaryPanel resourceId={resourceId} />
+                {isMockResource ? <SummaryPanel resourceId={resourceId} mockData={mockSummary} /> : <SummaryPanel resourceId={resourceId} />}
               </TabsContent>
 
               <TabsContent value="flashcards">
-                <FlashcardsPanel resourceId={resourceId} />
+                {isMockResource ? <FlashcardsPanel resourceId={resourceId} mockData={mockFlashcards} /> : <FlashcardsPanel resourceId={resourceId} />}
               </TabsContent>
 
               <TabsContent value="quiz">
-                <PracticeQuizPanel resourceId={resourceId} />
+                {isMockResource ? <PracticeQuizPanel resourceId={resourceId} mockData={mockPracticeQuiz} /> : <PracticeQuizPanel resourceId={resourceId} />}
               </TabsContent>
 
               <TabsContent value="mindmap">
-                <MindMapSvg materialKg={materialKg} isLoading={kgLoading} />
+                <MindMapSvg materialKg={isMockResource ? mockMaterialKnowledgeGraph : materialKg} isLoading={isMockResource ? false : kgLoading} />
               </TabsContent>
             </Tabs>
           </div>
