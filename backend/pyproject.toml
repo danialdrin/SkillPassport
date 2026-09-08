@@ -1,0 +1,2 @@
+[tool.pyrefly]
+ignore-missing-imports = ["non_existent_package.*"]

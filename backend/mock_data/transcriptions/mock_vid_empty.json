@@ -1,0 +1,8 @@
+{
+  "video_id": "mock_vid_empty",
+  "language": "en",
+  "duration": 100.0,
+  "full_text": "",
+  "segments": [],
+  "status": "empty"
+}

@@ -1,0 +1,44 @@
+{
+  "video_id": "mock_vid_multispeaker",
+  "language": "en",
+  "duration": 40.0,
+  "full_text": "Today we will review the project. The first step is to inspect the transcript. I agree, and I would also check the timestamps. Good point; then we can compare the analysis results.",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 8.0,
+      "speaker": "Instructor",
+      "text": "Today we will review the project."
+    },
+    {
+      "id": 2,
+      "start": 8.0,
+      "end": 16.0,
+      "speaker": "Student",
+      "text": "The first step is to inspect the transcript."
+    },
+    {
+      "id": 3,
+      "start": 16.0,
+      "end": 24.0,
+      "speaker": "Student",
+      "text": "I agree, and I would also check the timestamps."
+    },
+    {
+      "id": 4,
+      "start": 24.0,
+      "end": 32.0,
+      "speaker": "Instructor",
+      "text": "Good point; then we can compare the analysis results."
+    },
+    {
+      "id": 5,
+      "start": 32.0,
+      "end": 40.0,
+      "speaker": "Instructor",
+      "text": "That gives us a clear next step."
+    }
+  ],
+  "status": "complete"
+}

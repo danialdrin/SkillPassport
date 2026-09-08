@@ -1,0 +1,23 @@
+{
+  "video_id": "mock_vid_partial",
+  "language": "en",
+  "duration": 120.0,
+  "full_text": "This lesson introduces the first two concepts, but the remaining explanation is still processing.",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 8.0,
+      "speaker": "Instructor",
+      "text": "This lesson introduces the first two concepts."
+    },
+    {
+      "id": 2,
+      "start": 8.0,
+      "end": 16.0,
+      "speaker": "Instructor",
+      "text": "The remaining explanation is still processing."
+    }
+  ],
+  "status": "partial"
+}

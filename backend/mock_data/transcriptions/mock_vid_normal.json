@@ -1,0 +1,93 @@
+{
+  "video_id": "mock_vid_normal",
+  "language": "en",
+  "duration": 96.0,
+  "full_text": "Welcome to this practical tutorial on building reliable learning workflows. We will begin by defining the problem and then break the solution into small, testable steps. First, collect the source material and identify the concepts a learner needs to understand. Next, organize those concepts into a sequence that moves from foundations to applied examples. A useful transcript should preserve enough context for search, scrolling, and analysis. Timestamped segments allow a learner to jump directly to an explanation. Clear section boundaries also make strong analysis more reliable. We can then connect related concepts into a knowledge graph. Finally, review the results and create a short quiz to reinforce the most important ideas.",
+  "segments": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "end": 8.0,
+      "speaker": "Instructor",
+      "text": "Welcome to this practical tutorial on building reliable learning workflows."
+    },
+    {
+      "id": 2,
+      "start": 8.0,
+      "end": 16.0,
+      "speaker": "Instructor",
+      "text": "We will begin by defining the problem and then break the solution into small, testable steps."
+    },
+    {
+      "id": 3,
+      "start": 16.0,
+      "end": 24.0,
+      "speaker": "Instructor",
+      "text": "First, collect the source material and identify the concepts a learner needs to understand."
+    },
+    {
+      "id": 4,
+      "start": 24.0,
+      "end": 32.0,
+      "speaker": "Instructor",
+      "text": "Next, organize those concepts into a sequence that moves from foundations to applied examples."
+    },
+    {
+      "id": 5,
+      "start": 32.0,
+      "end": 40.0,
+      "speaker": "Instructor",
+      "text": "A useful transcript should preserve enough context for search, scrolling, and analysis."
+    },
+    {
+      "id": 6,
+      "start": 40.0,
+      "end": 48.0,
+      "speaker": "Instructor",
+      "text": "Timestamped segments allow a learner to jump directly to an explanation."
+    },
+    {
+      "id": 7,
+      "start": 48.0,
+      "end": 56.0,
+      "speaker": "Instructor",
+      "text": "Clear section boundaries also make strong analysis more reliable."
+    },
+    {
+      "id": 8,
+      "start": 56.0,
+      "end": 64.0,
+      "speaker": "Instructor",
+      "text": "We can then connect related concepts into a knowledge graph."
+    },
+    {
+      "id": 9,
+      "start": 64.0,
+      "end": 72.0,
+      "speaker": "Instructor",
+      "text": "Finally, review the results and create a short quiz to reinforce the most important ideas."
+    },
+    {
+      "id": 10,
+      "start": 72.0,
+      "end": 80.0,
+      "speaker": "Instructor",
+      "text": "This workflow keeps the original material connected to every generated learning aid."
+    },
+    {
+      "id": 11,
+      "start": 80.0,
+      "end": 88.0,
+      "speaker": "Instructor",
+      "text": "It also makes each stage easier to inspect when a result needs improvement."
+    },
+    {
+      "id": 12,
+      "start": 88.0,
+      "end": 96.0,
+      "speaker": "Instructor",
+      "text": "Use these checkpoints to keep future study sessions focused and measurable."
+    }
+  ],
+  "status": "complete"
+}
