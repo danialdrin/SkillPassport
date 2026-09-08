@@ -26,6 +26,11 @@ export interface MaterialKGResponse {
 export interface StudentKGStateItem {
   node_id: string;
   display_name: string;
+  description?: string | null;
+  type?: string;
+  bloom_level?: string | null;
+  parent_id?: string | null;
+  prerequisite_ids?: string[];
   competency_score: number;
   last_updated: string;
   evidence_event_ids: string[];
@@ -34,4 +39,5 @@ export interface StudentKGStateItem {
 export interface StudentKGResponse {
   user_id: string;
   skills: StudentKGStateItem[];
+  edges?: KGEdge[];
 }

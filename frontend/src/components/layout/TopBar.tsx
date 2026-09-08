@@ -15,7 +15,7 @@ export const TopBar: React.FC = () => {
   const [ingestModalOpen, setIngestModalOpen] = useState(false);
 
   const navItems = [
-    { label: "Home", path: "/", icon: Network },
+    { label: "Home", path: "/home", icon: Network },
     { label: "Skill Gap", path: "/skill-graph", icon: Network },
     { label: "Digital Passport", path: "/passport", icon: Award },
   ];

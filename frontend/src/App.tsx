@@ -7,6 +7,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Pages
+import { LandingPage } from './pages/Landing';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
@@ -35,13 +36,16 @@ export const App: React.FC = () => {
           <SpaceProvider>
             <BrowserRouter>
               <Routes>
-                {/* Public Routes */}
+                {/* Public Landing Page */}
+                <Route path="/" element={<LandingPage />} />
+
+                {/* Public Auth Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Protected Workspace Routes */}
+                {/* Protected Student Workspace Routes */}
                 <Route
-                  path="/"
+                  path="/home"
                   element={
                     <ProtectedRoute>
                       <Home />

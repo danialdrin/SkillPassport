@@ -12,7 +12,8 @@ export const LoginForm: React.FC = () => {
   const location = useLocation();
 
   const registeredEmail = (location.state as { registeredEmail?: string })?.registeredEmail || '';
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+  const targetPath = from && from !== '/' ? from : '/home';
 
   const [email, setEmail] = useState(registeredEmail);
   const [password, setPassword] = useState('');
@@ -31,7 +32,7 @@ export const LoginForm: React.FC = () => {
     setSubmitting(true);
     try {
       await login({ email: email.trim(), password });
-      navigate(from, { replace: true });
+      navigate(targetPath, { replace: true });
     } catch (err: unknown) {
       const apiErr = err as { detail?: string };
       setError(apiErr.detail || 'Incorrect email or password.');
