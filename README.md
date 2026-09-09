@@ -21,8 +21,6 @@ SkillPassport is an intelligent learning overlay operating above raw educational
 .
 ├── backend/                  # FastAPI Backend Services & AI Intelligence
 │   ├── app/                  # Application source code (API, services, models, core)
-│   ├── mock_data/            # Mock datasets for offline development
-│   ├── tests/                # Test suites & pytest assertions
 │   ├── requirements.txt      # Python dependencies
 │   └── run.py                # Server launcher script
 ├── frontend/                 # React 19 + Vite Frontend Application
